@@ -1,0 +1,15 @@
+{
+  "name": "Deckpublisher",
+  "version": "1.1",
+  "description": "A tool to publish chart for Shadowverse deck code",
+  "permissions": [
+    "<all_urls>"
+  ],
+  "browser_action": {
+      "default_title": "Deckpublisher",
+      "default_icon": "icon.png",
+      "default_popup": "popup.html"
+  },
+  "manifest_version": 2,
+  "content_security_policy": "script-src 'self' https://ajax.googleapis.com https://shadowverse-portal.com; object-src 'self'"
+}
