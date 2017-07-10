@@ -1,11 +1,16 @@
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelector('#publish').addEventListener('click', function (){
+    document.querySelector('#publish').addEventListener('click', function () {
         publish();
+    });
+    document.querySelector('#export').addEventListener('click', function () {
+        let url = document.querySelector('#demo').toDataURL('image/png');
+        window.open(url, '_blank');
     });
 });
 
 async function publish() {
-    let deck_raw = await getHashByDeckCode();
+    let deck_code = document.querySelector("#deck_code").value;    
+    let deck_raw = await getHashByDeckCode(deck_code);
 
     let deck_summary = {
         'clan': deck_raw.clan,
@@ -28,7 +33,7 @@ async function publish() {
         }
     }
 
-    await drawDeck(deck_summary);
+    drawDeck(deck_summary);
 };
 
 function cardIndex(cards, card_id) {
@@ -42,8 +47,7 @@ function cardIndex(cards, card_id) {
     return -1;
 }
 
-function getHashByDeckCode() {
-    let deck_code = document.querySelector("#deck_code").value;
+function getHashByDeckCode(deck_code) {
     let hash_url = 'https://shadowverse-portal.com/api/v1/deck/import?format=json&lang=ja&deck_code=' + deck_code;
 
     return fetch(hash_url).then(function (response) {
@@ -80,20 +84,51 @@ function getDeckByHash(deck_hash) {
 }
 
 function drawDeck(deck) {
-    let canvas = document.getElementById('demo');
+    let canvas = document.querySelector('#demo');
     canvas.width = 270;
-    canvas.height = deck.cards.length * 47;
+    canvas.height = deck.cards.length * 47 - 1;
     let ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.font = '11px Helvetica';
+    ctx.fillStyle = 'white';
 
     for (let i = 0; i < deck.cards.length; i++) {
-        drawCard(ctx, deck.cards[i], i);
+        fetch('https://shadowverse-portal.com/image/card/zh-tw/L_' + deck.cards[i].card_id + '.jpg').then(function (response) {
+            return response.blob()
+        }).then(function (response) {
+            let img = new Image();
+            img.onload = function () {
+                ctx.drawImage(img, 0, i * 47, 270, 46);
+                ctx.fillText(deck.cards[i].card_name, 50, i * 47 + 26, 150);
+            };
+            img.src = URL.createObjectURL(response);
+        })
     }
-}
+    
+    for (let i = 0; i < deck.cards.length; i++) {
+        fetch('https://shadowverse-portal.com/public/assets/image/common/global/cost_' + deck.cards[i].cost + '.png').then(function (response) {
+            return response.blob()
+        }).then(function (response) {
+            let img = new Image();
+            img.onload = function () {
+                ctx.drawImage(img, 10, i * 47 + 10, 22, 22);
+            };
+            img.src = URL.createObjectURL(response);
+        })
+    }
+    
+    // for (let i = 0; i < deck.cards.length; i++) {
+    //     fetch('https://shadowverse-portal.com/public/assets/image/common/zh-tw/rarity_bronze.png' + deck.cards[i].rarity + '.png').then(function (response) {
+    //         return response.blob()
+    //     }).then(function (response) {
+    //         let img = new Image();
+    //         img.onload = function () {
+    //             ctx.drawImage(img, 10, i * 47 + 5, 22, 22);
+    //         };
+    //         img.src = URL.createObjectURL(response);
+    //     })
+    // }
 
-function drawCard(ctx, card, index) {
-    let img = new Image();
-    img.onload = function () {
-        ctx.drawImage(img, 0, index * 47, 270, 46);
-    };
-    img.src = 'https://shadowverse-portal.com/image/card/zh-tw/L_' + card.card_id + '.jpg';
+    
 }
