@@ -93,30 +93,39 @@ function drawDeck(deck) {
     ctx.font = '11px Helvetica';
     ctx.fillStyle = 'white';
 
+    let drawcards = [];
     for (let i = 0; i < deck.cards.length; i++) {
-        fetch('https://shadowverse-portal.com/image/card/zh-tw/L_' + deck.cards[i].card_id + '.jpg').then(function (response) {
-            return response.blob()
-        }).then(function (response) {
+        let drawcard = new Promise((resolve, reject) => {
             let img = new Image();
             img.onload = function () {
                 ctx.drawImage(img, 0, i * 47, 270, 46);
                 ctx.fillText(deck.cards[i].card_name, 50, i * 47 + 26, 150);
+                resolve();
             };
-            img.src = URL.createObjectURL(response);
+            img.src = 'https://shadowverse-portal.com/image/card/zh-tw/L_' + deck.cards[i].card_id + '.jpg';
         })
+        drawcards.push(drawcard);
     }
+
+    let drawcosts = [];
+    Promise.all(drawcards).then(function () {
+        for (let i = 0; i < deck.cards.length; i++) {
+            let drawcost = new Promise((resolve, reject) => {
+                let img = new Image();
+                img.onload = function () {
+                    ctx.drawImage(img, 10, i * 47 + 10, 22, 22);
+                    resolve();
+                };
+                img.src = 'https://shadowverse-portal.com/public/assets/image/common/global/cost_' + deck.cards[i].cost + '.png';
+            })
+            drawcosts.push(drawcost);
+        }
+    })
     
-    for (let i = 0; i < deck.cards.length; i++) {
-        fetch('https://shadowverse-portal.com/public/assets/image/common/global/cost_' + deck.cards[i].cost + '.png').then(function (response) {
-            return response.blob()
-        }).then(function (response) {
-            let img = new Image();
-            img.onload = function () {
-                ctx.drawImage(img, 10, i * 47 + 10, 22, 22);
-            };
-            img.src = URL.createObjectURL(response);
-        })
-    }
+    Promise.all(drawcosts).then(function () {
+        let url = document.querySelector('#demo').toDataURL('image/png');
+        window.open(url, '_blank');
+    })
     
     // for (let i = 0; i < deck.cards.length; i++) {
     //     fetch('https://shadowverse-portal.com/public/assets/image/common/zh-tw/rarity_bronze.png' + deck.cards[i].rarity + '.png').then(function (response) {
@@ -129,6 +138,4 @@ function drawDeck(deck) {
     //         img.src = URL.createObjectURL(response);
     //     })
     // }
-
-    
 }
