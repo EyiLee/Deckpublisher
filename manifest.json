@@ -6,10 +6,13 @@
     "<all_urls>"
   ],
   "browser_action": {
-      "default_title": "deckpublisher",
-      "default_icon": "icon.png",
-      "default_popup": "popup.html"
+    "default_title": "deckpublisher"
+  },
+  "background": {
+    "scripts": [
+      "src/background.js"
+    ]
   },
   "manifest_version": 2,
-  "content_security_policy": "script-src 'self' https://ajax.googleapis.com https://shadowverse-portal.com; object-src 'self'"
+  "content_security_policy": "script-src 'self' https://unpkg.com https://ajax.googleapis.com https://shadowverse-portal.com; object-src 'self'"
 }

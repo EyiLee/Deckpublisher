@@ -1,0 +1,41 @@
+<html>
+
+<head>
+  <link rel="stylesheet" href="/dist/index.css">
+</head>
+
+<body>
+  <div class="container mt-5">
+    <div class="form-group row">
+      <label for="deck_code" class="col-2 col-form-label">牌組代碼</label>
+      <div class="input-group col-10">
+        <input id="deck_code" class="form-control" type="text">
+        <span class="input-group-btn">
+          <button id="export_deck" class="btn btn-primary">提交</button>
+        </span>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="user_name" class="col-2 col-form-label">玩家名稱</label>
+      <div class="input-group col-10">
+        <input id="user_name" class="form-control" type="text">
+      </div>
+      <label for="user_id" class="col-2 col-form-label">玩家代碼(ID)</label>
+      <div class="input-group col-10">
+        <input id="user_id" class="form-control" type="text">
+      </div>
+      <label for="user_description" class="col-2 col-form-label">描述</label>
+      <div class="input-group col-10">
+        <input id="user_description" class="form-control" type="text">        
+        <span class="input-group-btn">
+          <button id="export_signature" class="btn btn-primary">提交</button>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div id=demo></div>
+  <script src="/dist/vendor.js"></script>  
+  <script src="/dist/index.js"></script>
+</body>
+
+</html>
